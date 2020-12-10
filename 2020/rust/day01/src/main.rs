@@ -53,13 +53,30 @@ use std::path::Path;
 fn main() {
     println!("Day 01!");
 
+    let target_sum = 2020;
+
     let args: Vec<String> = env::args().collect();
     let input_filename = &args[1];
 
-    if let Ok(lines) = input_nums(input_filename) {
-        for num in lines {
-            println!("num: {:?}", num);
+    let numbers = input_nums(input_filename).expect("Error getting numbers from input file");
+
+    let mut idx = 0;
+    'outer: for i in &numbers {
+        for j in &numbers[idx..] {
+            // println!("i: {} j: {}", i, j);
+            if i + j == target_sum {
+                println!(
+                    "Target sum found! {} + {} == {} == {}",
+                    i,
+                    j,
+                    i + j,
+                    target_sum
+                );
+                println!("Product! {} * {} = {}", i, j, i * j);
+                break 'outer;
+            }
         }
+        idx = idx + 1;
     }
 }
 
@@ -69,7 +86,7 @@ fn input_nums(filename: impl AsRef<Path>) -> io::Result<Vec<i32>> {
     let buff = io::BufReader::new(infile);
     Ok(buff
         .lines()
-        .map(|l| l.expect("error"))
+        .map(|l| l.expect("line error"))
         .map(|l| l.parse::<i32>().unwrap())
         .collect())
 }
