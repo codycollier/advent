@@ -65,13 +65,7 @@ fn main() {
         for j in &numbers[idx..] {
             // println!("i: {} j: {}", i, j);
             if i + j == target_sum {
-                println!(
-                    "Target sum found! {} + {} == {} == {}",
-                    i,
-                    j,
-                    i + j,
-                    target_sum
-                );
+                println!("Target sum found! {} + {} == {}", i, j, target_sum);
                 println!("Product! {} * {} = {}", i, j, i * j);
                 break 'outer;
             }
