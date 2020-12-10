@@ -63,11 +63,12 @@ fn main() {
     let mut idx = 0;
     'outer: for i in &numbers {
         for j in &numbers[idx..] {
-            // println!("i: {} j: {}", i, j);
-            if i + j == target_sum {
-                println!("Target sum found! {} + {} == {}", i, j, target_sum);
-                println!("Product! {} * {} = {}", i, j, i * j);
-                break 'outer;
+            for k in &numbers {
+                if i + j + k == target_sum {
+                    println!("Target sum found! {} + {} + {} == {}", i, j, k, target_sum);
+                    println!("Product! {} * {} * {} = {}", i, j, k, i * j * k);
+                    break 'outer;
+                }
             }
         }
         idx = idx + 1;
