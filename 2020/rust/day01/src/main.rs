@@ -45,14 +45,26 @@ to 2020; what do you get if you multiply them together?
 */
 
 use std::env;
-use std::fs;
+use std::fs::File;
+use std::io::{self, BufRead};
+use std::path::Path;
 
 fn main() {
     println!("Day 01!");
 
     let args: Vec<String> = env::args().collect();
-    let input_file = &args[1];
-    let input = fs::read_to_string(input_file).expect("error reading input file");
+    let input_filename = &args[1];
 
-    println!("input:\n{}", input);
+    if let Ok(lines) = input_nums(input_filename) {
+        for line in lines {
+            if let Ok(num) = line {
+                println!("num: {:?}\n", num);
+            }
+        }
+    }
+}
+
+fn input_nums(filename: impl AsRef<Path>) -> io::Result<io::Lines<io::BufReader<File>>> {
+    let infile = File::open(filename)?;
+    return Ok(io::BufReader::new(infile).lines());
 }
