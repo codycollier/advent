@@ -46,7 +46,8 @@ to 2020; what do you get if you multiply them together?
 
 use std::env;
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io;
+use std::io::BufRead;
 use std::path::Path;
 
 fn main() {
@@ -56,15 +57,19 @@ fn main() {
     let input_filename = &args[1];
 
     if let Ok(lines) = input_nums(input_filename) {
-        for line in lines {
-            if let Ok(num) = line {
-                println!("num: {:?}\n", num);
-            }
+        for num in lines {
+            println!("num: {:?}", num);
         }
     }
 }
 
-fn input_nums(filename: impl AsRef<Path>) -> io::Result<io::Lines<io::BufReader<File>>> {
-    let infile = File::open(filename)?;
-    return Ok(io::BufReader::new(infile).lines());
+// Return a vector of numbers from the input file
+fn input_nums(filename: impl AsRef<Path>) -> io::Result<Vec<i32>> {
+    let infile = File::open(filename).expect("Error opening file");
+    let buff = io::BufReader::new(infile);
+    Ok(buff
+        .lines()
+        .map(|l| l.expect("error"))
+        .map(|l| l.parse::<i32>().unwrap())
+        .collect())
 }
