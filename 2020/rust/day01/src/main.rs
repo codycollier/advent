@@ -1,7 +1,8 @@
 /*
- * Day 01 - parts 1 and then modified for part 2
+ * Day 01 - parts 1 and 2
  * https://adventofcode.com/2020/day/1
-*/
+ *
+ */
 
 use std::env;
 use std::fs::File;
