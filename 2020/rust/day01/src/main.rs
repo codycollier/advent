@@ -1,47 +1,6 @@
 /*
--------------------------------------------------------------------------------
-:: https://adventofcode.com/2020/day/1
--------------------------------------------------------------------------------
-
---- Day 1: Report Repair ---
-
-After saving Christmas five years in a row, you've decided to take a vacation
-at a nice resort on a tropical island. Surely, Christmas will go on without
-you.
-
-The tropical island has its own currency and is entirely cash-only. The gold
-coins used there have a little picture of a starfish; the locals just call them
-stars. None of the currency exchanges seem to have heard of them, but somehow,
-you'll need to find fifty of these coins by the time you arrive so you can pay
-the deposit on your room.
-
-To save your vacation, you need to get all fifty stars by December 25th.
-
-Collect stars by solving puzzles. Two puzzles will be made available on each
-day in the Advent calendar; the second puzzle is unlocked when you complete the
-first. Each puzzle grants one star. Good luck!
-
-Before you leave, the Elves in accounting just need you to fix your expense
-report (your puzzle input); apparently, something isn't quite adding up.
-
-Specifically, they need you to find the two entries that sum to 2020 and then
-multiply those two numbers together.
-
-For example, suppose your expense report contained the following:
-
-1721
-979
-366
-299
-675
-1456
-
-In this list, the two entries that sum to 2020 are 1721 and 299. Multiplying
-them together produces 1721 * 299 = 514579, so the correct answer is 514579.
-
-Of course, your expense report is much larger. Find the two entries that sum
-to 2020; what do you get if you multiply them together?
--------------------------------------------------------------------------------
+ * Day 01 - parts 1 and then modified for part 2
+ * https://adventofcode.com/2020/day/1
 */
 
 use std::env;
@@ -60,19 +19,19 @@ fn main() {
 
     let numbers = input_nums(input_filename).expect("Error getting numbers from input file");
 
-    let mut idx = 0;
-    'outer: for i in &numbers {
-        for j in &numbers[idx..] {
-            for k in &numbers {
-                if i + j + k == target_sum {
-                    println!("Target sum found! {} + {} + {} == {}", i, j, k, target_sum);
-                    println!("Product! {} * {} * {} = {}", i, j, k, i * j * k);
-                    break 'outer;
-                }
-            }
-        }
-        idx = idx + 1;
-    }
+    println!("");
+    println!("---------------------------------------------------------");
+    println!(":: Part 1");
+    println!("---------------------------------------------------------");
+    part1(&numbers[..], target_sum);
+
+    println!("");
+    println!("---------------------------------------------------------");
+    println!(":: Part 2");
+    println!("---------------------------------------------------------");
+    part2(&numbers[..], target_sum);
+
+    println!("")
 }
 
 // Return a vector of numbers from the input file
@@ -84,4 +43,38 @@ fn input_nums(filename: impl AsRef<Path>) -> io::Result<Vec<i32>> {
         .map(|l| l.expect("line error"))
         .map(|l| l.parse::<i32>().unwrap())
         .collect())
+}
+
+// Part 1 - Find the two numbers which produce the target sum,
+// and then print the product of those two numbers
+fn part1(numbers: &[i32], target_sum: i32) {
+    let mut idx = 0;
+    'outer: for i in numbers {
+        for j in &numbers[idx..] {
+            if i + j == target_sum {
+                println!("Target sum found! {} + {} == {}", i, j, target_sum);
+                println!("Product! {} * {} = {}", i, j, i * j);
+                break 'outer;
+            }
+        }
+        idx = idx + 1;
+    }
+}
+
+// Part 2 - Find the three numbers which produce the target sum,
+// and then print the product of those three numbers
+fn part2(numbers: &[i32], target_sum: i32) {
+    let mut idx = 0;
+    'outer: for i in numbers {
+        for j in &numbers[idx..] {
+            for k in numbers {
+                if i + j + k == target_sum {
+                    println!("Target sum found! {} + {} + {} == {}", i, j, k, target_sum);
+                    println!("Product! {} * {} * {} = {}", i, j, k, i * j * k);
+                    break 'outer;
+                }
+            }
+        }
+        idx = idx + 1;
+    }
 }
