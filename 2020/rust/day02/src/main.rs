@@ -18,27 +18,18 @@
  */
 
 use std::env;
-use std::io;
-use std::path::Path;
+
+use day02;
 
 fn main() {
     println!("Day 02!");
 
     let args: Vec<String> = env::args().collect();
     let input_file = &args[1];
-    let r = input_params(input_file).expect("Error parsing input file");
+    let r = day02::input_params(input_file).expect("Error parsing input file");
     for i in r {
         println!("::> {:?}", i);
     }
 
     println!("");
-}
-
-// Return vector of parsed input params from each line
-fn input_params(_input_filename: impl AsRef<Path>) -> io::Result<Vec<i32>> {
-    let mut v = Vec::new();
-    v.push(1);
-    v.push(2);
-    v.push(3);
-    Ok(v)
 }
