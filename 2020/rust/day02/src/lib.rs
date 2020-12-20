@@ -108,6 +108,11 @@ fn is_valid_p1(entry: &PitPass) -> bool {
 
 // Return true it the point in time password entry is valid (part 2 rules)
 fn is_valid_p2(entry: &PitPass) -> bool {
-    let count = entry.password.matches(entry.required_char).count();
-    return (entry.min <= count) && (count <= entry.max);
+    // assume no invalid position index numbers
+    let pos_a = entry.password.chars().nth(entry.min - 1).unwrap();
+    let pos_b = entry.password.chars().nth(entry.max - 1).unwrap();
+    if (pos_a == entry.required_char || pos_b == entry.required_char) && pos_a != pos_b {
+        return true;
+    }
+    return false;
 }
