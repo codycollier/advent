@@ -26,9 +26,9 @@ fn main() {
 
     let args: Vec<String> = env::args().collect();
     let input_file = &args[1];
-    let r = day02::input_params(input_file).expect("Error parsing input file");
-    for i in r {
-        println!("::> {:?}", i);
+    let passwords = day02::process_input(input_file).expect("Error parsing input file");
+    for p in passwords {
+        println!("::> {:?}", p);
     }
 
     println!("");

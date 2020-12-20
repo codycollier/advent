@@ -17,7 +17,9 @@
  *
  */
 
+use std::fs::File;
 use std::io;
+use std::io::BufRead;
 use std::path::Path;
 
 // Point in time policy and password
@@ -34,13 +36,29 @@ pub struct PitPass {
 // The input is per line, and consistently uses the following structure:
 // {min_int}-{max_int} {char_required}: {string_password}
 //
-pub fn input_params(_input_filename: impl AsRef<Path>) -> io::Result<Vec<PitPass>> {
+pub fn process_input(input_filename: impl AsRef<Path>) -> io::Result<Vec<PitPass>> {
+    // Return a Vector of PitPass
     let mut v = Vec::new();
-    v.push(PitPass {
+
+    // Loop over input file and parse each line
+    let fh = File::open(input_filename).expect("Error opening input file");
+    let input = io::BufReader::new(fh);
+    for line in input.lines() {
+        let entry = line.expect("line error");
+        let p2 = parse_line(entry).expect("error parsing line");
+        v.push(p2);
+    }
+
+    // ...
+    Ok(v)
+}
+
+// Parse an input line and return a PitPass
+fn parse_line(_entry: String) -> io::Result<PitPass> {
+    return Ok(PitPass {
         min: 1,
         max: 2,
         required_char: 'a',
-        password: String::from("passfoo"),
+        password: String::from("foo"),
     });
-    Ok(v)
 }
