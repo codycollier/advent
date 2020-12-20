@@ -42,22 +42,29 @@ pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
     let fh = File::open(input_filename).expect("Error opening input file");
     let input = io::BufReader::new(fh);
     for line in input.lines() {
-        let entry = line.expect("line error");
-
-        let _p2 = parse_line(entry).expect("error parsing line");
-
-        valid_count = valid_count + 1;
+        if let Ok(line) = line {
+            if let Ok(entry) = parse_line(line) {
+                if is_valid(entry) {
+                    valid_count = valid_count + 1;
+                }
+            }
+        }
     }
 
     return valid_count;
 }
 
 // Parse an input line and return a PitPass
-fn parse_line(_entry: String) -> io::Result<PitPass> {
+fn parse_line(_line: String) -> io::Result<PitPass> {
     return Ok(PitPass {
         min: 1,
         max: 2,
         required_char: 'a',
         password: String::from("foo"),
     });
+}
+
+// Return true if the point in time password entry is valid
+fn is_valid(_entry: PitPass) -> bool {
+    return true;
 }
