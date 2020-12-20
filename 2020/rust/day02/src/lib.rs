@@ -17,6 +17,7 @@
  *
  */
 
+use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -31,11 +32,7 @@ pub struct PitPass {
     password: String,
 }
 
-// Return vector of parsed input params from each line
-//
-// The input is per line, and consistently uses the following structure:
-// {min_int}-{max_int} {char_required}: {string_password}
-//
+// Return a total count of the valid entries
 pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
     let mut valid_count = 0;
 
@@ -55,13 +52,47 @@ pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
 }
 
 // Parse an input line and return a PitPass
-fn parse_line(_line: String) -> io::Result<PitPass> {
-    return Ok(PitPass {
-        min: 1,
-        max: 2,
-        required_char: 'a',
-        password: String::from("foo"),
-    });
+//
+// Each line consistently has the following structure:
+//  {min_int}-{max_int} {char_required}: {string_password}
+//
+// Example:
+//  * 3-5 f: fgfff
+//
+fn parse_line(line: String) -> Result<PitPass, Box<dyn Error>> {
+    // Parse into vars or return an error
+    let min = line
+        .split("-")
+        .nth(0)
+        .ok_or("line split error")?
+        .parse::<i32>()
+        .or(Err("parse error"))?;
+
+    let max = line
+        .split(&['-', ' '][..])
+        .nth(1)
+        .ok_or("line split error")?
+        .parse::<i32>()
+        .or(Err("parse error"))?;
+
+    let required_char = line
+        .split(&[' ', ':'][..])
+        .nth(1)
+        .ok_or("line split error")?
+        .parse::<char>()
+        .or(Err("parse error"))?;
+
+    let pass = String::from(line.split(" ").nth(2).ok_or("line split error")?);
+
+    // Parse success, return PitPass
+    let p = PitPass {
+        min: min,
+        max: max,
+        required_char: required_char,
+        password: pass,
+    };
+
+    return Ok(p);
 }
 
 // Return true if the point in time password entry is valid
