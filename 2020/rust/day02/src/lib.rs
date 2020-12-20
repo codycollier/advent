@@ -26,19 +26,20 @@ use std::path::Path;
 // Point in time policy and password
 #[derive(Debug)]
 pub struct PitPass {
-    min: i32,
-    max: i32,
+    min: usize,
+    max: usize,
     required_char: char,
     password: String,
 }
 
 // Return a total count of the valid entries
-pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
+pub fn process_input(input_filename: impl AsRef<Path>) -> Result<usize, Box<dyn Error>> {
     let mut valid_count = 0;
 
-    let fh = File::open(input_filename).expect("Error opening input file");
+    let fh = File::open(input_filename).or(Err("Error opening input file"))?;
     let input = io::BufReader::new(fh);
     for line in input.lines() {
+        // mask per line errors, and accumulate count of valid / invalid entries
         if let Ok(line) = line {
             if let Ok(entry) = parse_line(line) {
                 if is_valid(entry) {
@@ -48,7 +49,7 @@ pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
         }
     }
 
-    return valid_count;
+    return Ok(valid_count);
 }
 
 // Parse an input line and return a PitPass
@@ -65,14 +66,14 @@ fn parse_line(line: String) -> Result<PitPass, Box<dyn Error>> {
         .split("-")
         .nth(0)
         .ok_or("line split error")?
-        .parse::<i32>()
+        .parse::<usize>()
         .or(Err("parse error"))?;
 
     let max = line
         .split(&['-', ' '][..])
         .nth(1)
         .ok_or("line split error")?
-        .parse::<i32>()
+        .parse::<usize>()
         .or(Err("parse error"))?;
 
     let required_char = line
@@ -96,6 +97,7 @@ fn parse_line(line: String) -> Result<PitPass, Box<dyn Error>> {
 }
 
 // Return true if the point in time password entry is valid
-fn is_valid(_entry: PitPass) -> bool {
-    return true;
+fn is_valid(entry: PitPass) -> bool {
+    let count = entry.password.matches(entry.required_char).count();
+    return (entry.min <= count) && (count <= entry.max);
 }
