@@ -33,8 +33,9 @@ pub struct PitPass {
 }
 
 // Return a total count of the valid entries
-pub fn process_input(input_filename: impl AsRef<Path>) -> Result<usize, Box<dyn Error>> {
-    let mut valid_count = 0;
+pub fn process_input(input_filename: impl AsRef<Path>) -> Result<(usize, usize), Box<dyn Error>> {
+    let mut valid_count_p1 = 0;
+    let mut valid_count_p2 = 0;
 
     let fh = File::open(input_filename).or(Err("Error opening input file"))?;
     let input = io::BufReader::new(fh);
@@ -42,14 +43,17 @@ pub fn process_input(input_filename: impl AsRef<Path>) -> Result<usize, Box<dyn 
         // mask per line errors, and accumulate count of valid / invalid entries
         if let Ok(line) = line {
             if let Ok(entry) = parse_line(line) {
-                if is_valid(entry) {
-                    valid_count = valid_count + 1;
+                if is_valid_p1(&entry) {
+                    valid_count_p1 = valid_count_p1 + 1;
+                }
+                if is_valid_p2(&entry) {
+                    valid_count_p2 = valid_count_p2 + 1;
                 }
             }
         }
     }
 
-    return Ok(valid_count);
+    return Ok((valid_count_p1, valid_count_p2));
 }
 
 // Parse an input line and return a PitPass
@@ -96,8 +100,14 @@ fn parse_line(line: String) -> Result<PitPass, Box<dyn Error>> {
     return Ok(p);
 }
 
-// Return true if the point in time password entry is valid
-fn is_valid(entry: PitPass) -> bool {
+// // Return true it the point in time password entry is valid (part 1 rules)
+fn is_valid_p1(entry: &PitPass) -> bool {
+    let count = entry.password.matches(entry.required_char).count();
+    return (entry.min <= count) && (count <= entry.max);
+}
+
+// Return true it the point in time password entry is valid (part 2 rules)
+fn is_valid_p2(entry: &PitPass) -> bool {
     let count = entry.password.matches(entry.required_char).count();
     return (entry.min <= count) && (count <= entry.max);
 }
