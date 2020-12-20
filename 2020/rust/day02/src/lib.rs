@@ -36,21 +36,20 @@ pub struct PitPass {
 // The input is per line, and consistently uses the following structure:
 // {min_int}-{max_int} {char_required}: {string_password}
 //
-pub fn process_input(input_filename: impl AsRef<Path>) -> io::Result<Vec<PitPass>> {
-    // Return a Vector of PitPass
-    let mut v = Vec::new();
+pub fn process_input(input_filename: impl AsRef<Path>) -> i32 {
+    let mut valid_count = 0;
 
-    // Loop over input file and parse each line
     let fh = File::open(input_filename).expect("Error opening input file");
     let input = io::BufReader::new(fh);
     for line in input.lines() {
         let entry = line.expect("line error");
-        let p2 = parse_line(entry).expect("error parsing line");
-        v.push(p2);
+
+        let _p2 = parse_line(entry).expect("error parsing line");
+
+        valid_count = valid_count + 1;
     }
 
-    // ...
-    Ok(v)
+    return valid_count;
 }
 
 // Parse an input line and return a PitPass
