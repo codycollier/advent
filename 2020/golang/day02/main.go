@@ -13,11 +13,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
 // Return num1, num2, character, and password from entry
 func parseLine(line string) (int, int, string, string) {
-	return 1, 2, "a", "foo"
+	num1, _ := strconv.Atoi(strings.Split(line, "-")[0])
+	num2, _ := strconv.Atoi(strings.Split(strings.Split(line, "-")[1], " ")[0])
+	char := strings.Split(strings.Split(line, " ")[1], ":")[0]
+	pass := strings.Split(line, " ")[2]
+	return num1, num2, char, pass
 }
 
 // Return true if valid according to ruleset 1
